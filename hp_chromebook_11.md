@@ -98,5 +98,5 @@ Track Pad Issues
 
 From [here](http://www.eddiedillon.info/?p=477) I found some helpful commands to fix the trackpad. The trackpad on the HP is called "Atmel maXTouch Touchpad" so replacing "Cypress APA Trackpad (cyapa)" with the correct trackpad name is all we need to do.
 
-  xinput set-prop "Atmel maXTouch Touchpad" "Synaptics Finger" 15 20 256
-  xinput set-prop –type=int –format=8 "Atmel maXTouch Touchpad" "Synaptics Two-Finger Scrolling" 1 1
+    xinput set-prop "Atmel maXTouch Touchpad" "Synaptics Finger" 15 20 256
+    xinput set-prop –type=int –format=8 "Atmel maXTouch Touchpad" "Synaptics Two-Finger Scrolling" 1 1
