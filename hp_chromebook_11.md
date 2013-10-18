@@ -16,7 +16,7 @@ Steps 1 through 7 should work properly. In step 8 use the following command,
 
     curl -L -O http://goo.gl/s9ryd; sudo bash s9ryd xubuntu-desktop lts
 
-The following commands fail causing *xubuntu-desktop* not to install. **DO NOT REBOOT!** CTRL-C out of the script and chroot into the ChrUbuntu partition.
+The add-apt-repository commands fail causing *xubuntu-desktop* not to install. **DO NOT REBOOT!** CTRL-C out of the script and chroot into the ChrUbuntu partition.
 
     chroot /tmp/urfs
   
@@ -58,21 +58,41 @@ Uncommented all the sources in */etc/apt/sources.list*. After editing the file i
     deb http://ports.ubuntu.com/ubuntu-ports/ precise-security multiverse
     deb-src http://ports.ubuntu.com/ubuntu-ports/ precise-security multiverse
     
-Now to install xubuntu-desktop.
+Now install xubuntu-desktop and some other helpful utilities.
 
     apt-get update
     apt-get install xubuntu-desktop
-    
-At this point you could reboot and have a fully working system, but lets add some other useful packages.
-
     apt-get install chromium-browser xfce4-battery-plugin xfce4-mount-plugin xfce4-volumed xfce4-panel xfce4-mixer
     
-We should also copy over some of the Chrome plugins. Exit the chroot with CTRL-D or typing *exit*.
+
+Exit the chroot by hiting CTRL-D or typing *exit*.
+
+Before rebooting copy the pepper flash player plugin that chrome uses.
 
     mkdir -p /tmp/urfs/opt/google/chrome/pepper
     cp /opt/google/chrome/pepper/libpepflashplayer.so /tmp/urfs/opt/google/chrome/pepper
-    cp /opt/google/chrome/pepper/libnetflixhelper.so /tmp/urfs/opt/google/chrome/pepper
     
+To get Chromium to use the Chrome flash plugin we need to add two flags to */tmp/urfs/etc/chromium-browser/default*. Log into your Chromebook to start the Chrome browser. Then CTRL+ALT+-> back to the console and type,
+
+    ps ax | grep "\-\-ppapi-flash"
+
+Look for the two flags `--ppapi-flash-path` and `--ppapi-flash-version`. This is what Chrome is using on my system,
+
+    --ppapi-flash-path=/opt/google/chrome/pepper/libpepflashplayer.so --ppapi-flash-version=11.9.900.117-r1
+    
+Add these flags to the CHROMIUM_FLAGS variable in */tmp/urfs/etc/chromium-browser/default*. It should look something like this,
+
+    # Default settings for chromium. This file is sourced by /usr/bin/chromium-browser
+    #
+    # Options to pass to chromium   
+    CHROMIUM_FLAGS="--ppapi-flash-path=/opt/google/chrome/pepper/libpepflashplayer.so --ppapi-flash-version=11.9.900.117-r1"
+    
+It is time to reboot.
+
+    sudo reboot
+    
+You should have a working xubuntu system.
+
 Track Pad Issues
 ---
 
